@@ -1,42 +1,43 @@
-import Pool from './base/pool.js'
+import Pool from './base/pool.js';
 
-let instance
+let instance;
 
 export default class DataBus {
-  constructor() {
-    if (instance) {
-      return instance
+    constructor() {
+        if (instance) {
+            return instance;
+        }
+
+        instance = this;
+
+        this.pool = new Pool();
+
+        this.reset();
     }
 
-    instance = this
+    reset() {
+        this.frame = 0;
+        this.score = 0;
+        this.life = 3;
+        this.bullets = [];
+        this.enemys = [];
+        this.animations = [];
+        this.gameOver = false;
+    }
 
-    this.pool = new Pool()
+    removeEnemey(enemy) {
+        const temp = this.enemys.shift();
 
-    this.reset()
-  }
+        temp.visible = false;
 
-  reset() {
-    this.frame = 0
-    this.score = 0
-    this.bullets = []
-    this.enemys = []
-    this.animations = []
-    this.gameOver = false
-  }
+        this.pool.recover('enemy', enemy);
+    }
 
-  removeEnemey(enemy) {
-    const temp = this.enemys.shift()
+    removeBullets(bullet) {
+        let temp = this.bullets.shift();
 
-    temp.visible = false
+        temp.visible = false;
 
-    this.pool.recover('enemy', enemy)
-  }
-
-  removeBullets(bullet) {
-    let temp = this.bullets.shift()
-
-    temp.visible = false
-
-    this.pool.recover('bullet', bullet)
-  }
+        this.pool.recover('bullet', bullet);
+    }
 }
